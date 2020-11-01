@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+import { isAuthenticated } from '../services/auth';
+
 Vue.use( Router );
 
-export default new Router({
+const router = new Router({
     mode: 'history',
     routes: [
         {
@@ -13,28 +15,24 @@ export default new Router({
             alias: [ '/login' ]
         },
         {
+            name: 'register',
+            path: '/register',
+            component: () => import( '@/components/Login/Register' )
+        },
+        {
             name: 'home',
             path: '/home',
             component: () => import( '@/components/Home/Home' ),
-            beforeEnter: (to, from, next) => {
-                if( localStorage.token ) {
-                    next();
-                } else {
-                    next( false );
-                }
-            }
+        },
+        {
+            name: 'admin',
+            path: '/admin',
+            component: () => import( '@/components/Admin/Admin' ),
         },
         {
             name: 'calendar',
             path: '/calendar',
             component: () => import( '@/components/Calendar/Calendar' ),
-            beforeEnter: (to, from, next) => {
-                if( localStorage.token ) {
-                    next();
-                } else {
-                    next('/');
-                }
-            }
         },
         {
             name: 'meetings',
@@ -45,46 +43,28 @@ export default new Router({
                     name: 'search-meeting',
                     path: '',
                     component: () => import( '@/components/Meetings/FilterMeetings' ),
-                    beforeEnter: (to, from, next) => {
-                        if( localStorage.token ) {
-                            next();
-                        } else {
-                            next('/');
-                        }
-                    }
                 },
                 {
                     name: 'add-meeting',
                     path: 'add',
                     component: () => import( '@/components/Meetings/AddMeeting' ),
-                    beforeEnter: (to, from, next) => {
-                        if( localStorage.token ) {
-                            next();
-                        } else {
-                            next('/');
-                        }
-                    }
                 }
             ],
-            beforeEnter: (to, from, next) => {
-                if( localStorage.token ) {
-                    next();
-                } else {
-                    next('/');
-                }
-            }
         },
         {
             name: 'teams',
             path: '/teams',
             component: () => import( '@/components/Teams/Teams' ),
-            beforeEnter: (to, from, next) => {
-                if( localStorage.token ) {
-                    next();
-                } else {
-                    next('/');
-                }
-            }
         }
     ]
 });
+
+router.beforeEach(( to, from, next ) => {
+    if( ( from !== '/' || from !== '/login' ) && isAuthenticated() ) {
+        next();
+    } else {
+        next('/');
+    }
+})
+
+export default router;

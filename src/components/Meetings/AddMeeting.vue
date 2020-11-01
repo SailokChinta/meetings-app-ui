@@ -10,12 +10,12 @@
                         <h4 class="unbold">
                             Meeting name
                         </h4>
-                        <input name="name" class="form-control form-control-lg" id="meeting-name" type="text" placeholder="Daily Sprint" v-model="name">
+                        <input name="name" class="form-control form-control-lg" id="meeting-name" type="text" placeholder="Daily Sprint" v-model="name" required>
 
                         <h4 class="unbold">
                             Date
                         </h4>
-                        <input name="date" type="date" class="date-picker" v-model="date">
+                        <input name="date" type="date" class="date-picker" v-model="date" required>
 
                         <h4 class="unbold">
                             Description
@@ -58,11 +58,10 @@
                             EmailIDs of attendees or teams's short
                         </h4>
                         <multiselect v-model="attendees" tag-placeholder="Add this as new tag" placeholder="john.@example, @annual-day" label="name" track-by="id" :options="options" :multiple="true" :taggable="true"></multiselect>
-                        <!-- <input name="attendees" class="form-control form-control-lg" type="text" placeholder="john.@example, @annual-day" v-model="attendees"> -->
                         <p>seperate emailids / team's short names by commas - teams short names always start with @</p>
 
                         <p class="lead">
-                            <input type="submit" class="btn btn-dark" value="Add Meeting" @click="addMeeting" />
+                            <input type="submit" class="btn btn-dark" value="Add Meeting" />
                         </p>
                     </form>
                 </div>
@@ -90,7 +89,7 @@ export default {
             startTimeMinutes: 0,
             endTimeHours: 0,
             endTimeMinutes: 0,
-            attendees: []
+            attendees: [],
         }
     },
     methods: {
@@ -119,15 +118,15 @@ export default {
                 attendees: userAttendees,
                 teams: teamAttendees
             };
-            console.log( this.attendees );
+            // console.log( this.attendees );
             addMeeting( requestBody )
                 .then( response => {
-                    alert( 'successfully added' )
                     this.meetings = response;
+                    this.$toast.success( 'Succesfully added a Meeting' )
                 })
                 .catch( error => {
-                    alert( error.response.data.message );
-                    console.log( error );
+                    this.$toast.error( error.response.data.message );
+                    // console.log( error );
                 });
             this.name = '';
             this.date = '';
@@ -153,7 +152,7 @@ export default {
                 this.options.push( { id: user._id, type: 'user', name: user.email} );
             });
         } catch ( error ) {
-            this.error = error;
+            this.$toast.error( 'Error while fetching Options' );
         }
     }
 }

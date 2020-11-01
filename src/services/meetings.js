@@ -6,11 +6,11 @@ export const getMeetingsByDate = ( date ) => {
     let config = { params, headers };
     return axios.get( `http://localhost:8080/api/meetings`, config )
                 .then( response => {
-                    console.log( response.data );
+                    // console.log( response.data );
                     return response.data;
                 })
                 .catch( error => {
-                    console.log( error.response.data.message );
+                    // console.log( error.response.data.message );
                     throw error;
                 });
 }
@@ -21,11 +21,11 @@ export const searchMeetings = ( period, search ) => {
     let config = { params, headers };
     return axios.get( `http://localhost:8080/api/meetings`, config )
                 .then( response => {
-                    console.log( response.data );
+                    // console.log( response.data );
                     return response.data;
                 })
                 .catch( error => {
-                    console.log( error.response.data.message );
+                    // console.log( error.response.data.message );
                     throw error;
                 });
 }
@@ -33,13 +33,13 @@ export const searchMeetings = ( period, search ) => {
 export const addMemberToMeeting = ( id, data ) => {
     const headers = { Authorization: localStorage.token || '' };
     let config = { headers };
-    return axios.patch( `http://localhost:8080/api/meetings/${id}/addUser`, data, config )
+    return axios.patch( `http://localhost:8080/api/meetings/${id}/addMember`, data, config )
                 .then( response => {
-                    console.log( response.data );
+                    // console.log( response.data );
                     return response.data;
                 })
                 .catch( error => {
-                    console.log( error.response.data.message );
+                    // console.log( error.response.data.message );
                     throw error;
                 });
 }
@@ -47,13 +47,13 @@ export const addMemberToMeeting = ( id, data ) => {
 export const excuseMeeting = ( id ) => {
     const headers = { Authorization: localStorage.token || '' };
     let config = { headers };
-    return axios.patch( `http://localhost:8080/api/meetings/${id}/deleteUser`, null,config )
+    return axios.patch( `http://localhost:8080/api/meetings/${id}/deleteMember`, null,config )
                 .then( response => {
-                    console.log( response.data );
+                    // console.log( response.data );
                     return response.data;
                 })
                 .catch( error => {
-                    console.log( error.response.data.message );
+                    // console.log( error.response.data.message );
                     throw error;
                 });
 }
@@ -64,11 +64,11 @@ export const addMeeting = ( data ) => {
     console.log( data );
     return axios.post( `http://localhost:8080/api/meetings/add`, data, config )
                 .then( response => {
-                    console.log( response.data );
+                    // console.log( response.data );
                     return response.data;
                 })
                 .catch( error => {
-                    console.log( error.response.data.message );
+                    // console.log( error.response.data.message );
                     throw error;
                 });
 }

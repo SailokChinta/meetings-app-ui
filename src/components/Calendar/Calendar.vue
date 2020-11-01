@@ -85,7 +85,8 @@ export default {
                 })
                 .catch( error => {
                     this.status = ERROR_LOADING;
-                    console.log( error );
+                    this.error = error;
+                    // console.log( error );
                 });
         }
     },

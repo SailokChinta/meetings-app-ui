@@ -31,6 +31,7 @@
                 <div class="col-4 d-flex" v-for="team in this.teams" :key="team._id">
                     <div class="card" style="width: 18rem;" >
                         <div class="card-body">
+                            <i class="fa fa-edit" style="float: right; cursor: pointer" @click="beforeEditTeam( team._id )"></i>
                             <h5 class="card-title">{{ team.name }}</h5>
                             <h6 class="card-title">{{ team.shortName }}</h6>
                             <p  class="card-text">{{ team.description }}</p> 
@@ -52,11 +53,14 @@
                 </div>
                 <div class="col-4 d-flex" >
                     <div class="card" style="width: 18rem; height: 100%; cursor: pointer " >
-                        <i class="fa fa-plus fa-4x text-center" style="padding-top: 43%" @click="showModal=true"> </i>
+                        <i class="fa fa-plus fa-4x text-center" style="padding-top: 43%" @click="addTeamModal=true"> </i>
                     </div>
                 </div>
-                <Modal v-model="showModal">
-                    <AddTeam v-on:close-modal="closeModal"/>
+                <Modal v-model="addTeamModal">
+                    <AddTeam v-on:submit-team="submitTeam" :users="this.users"/>
+                </Modal>
+                <Modal v-model="editTeamModal">
+                    <EditTeam v-on:edit-team="editTeam" :team="this.currentEditTeam"/>
                 </Modal>
             </div>
         </div>
@@ -65,6 +69,7 @@
 <script>
 import Navbar from '../Navbar/Navbar';
 import AddTeam from './AddTeam';
+import EditTeam from './EditTeam';
 
 import { getAllTeamsByUserId, excuseTeam, addMemberToTeam } from '@/services/teams';
 import { getAllUsers } from '@/services/users'
@@ -78,6 +83,7 @@ export default {
     components: {
         Navbar,
         AddTeam,
+        EditTeam,
         'Modal': VueModal
     },
     data() {
@@ -85,50 +91,64 @@ export default {
             status: LOADING,
             teams: null,
             users: null,
-            showModal: false
+            addTeamModal: false,
+            editTeamModal: false,
+            currentEditTeam: null
         }
     },
     methods: {
-        closeModal() {
-            this.showModal = false;
-            getAllTeamsByUserId()
-                .then( response => {
-                    this.status = LOADED;
-                    this.teams = response;
-                })
-                .catch( error => {
-                    this.status = ERROR_LOADING;
-                    this.error = error;
-                    console.log( error );
-                });
+        submitTeam( addedTeam ) {
+            this.addTeamModal = false;
+            this.teams = [ ...this.teams, ...addedTeam ];
         },
-        excuseTeam( teamId ) {
-            excuseTeam()
-                .then( response => {
-                    response;
-                })
-                .catch( error => {
-                    this.error = error;
-                    console.log( error );
-                });
+        beforeEditTeam( teamId ) {
+            [ this.currentEditTeam ] = this.teams.filter( team => team._id === teamId );
+            console.log( this.currentEditTeam )
+            this.editTeamModal = true;
+        },
+        editTeam( updatedTeam ) {
             let ind;
             this.teams.forEach( ( team, index ) => {
-                if( team._id === teamId ){
+                if( team._id === updatedTeam._id ) {
                     ind = index;
                 }
             });
-
             this.teams = [
                 ...this.teams.slice( 0, ind ),
-                ...this.teams.slice( ind + 1 )
+                updatedTeam,
+                ...this.teams.slice( ind+1 )
             ]
+            this.currentEditTeam = null;
+            this.editTeamModal = false;
+        },
+        async excuseTeam( teamId ) {
+            try {
+                const response = await excuseTeam( teamId );
+                this.$toast.success( `Left Team <strong>${response.name}</strong>` );
+
+                let ind;
+                this.teams.forEach( ( team, index ) => {
+                    if( team._id === teamId ){
+                        ind = index;
+                    }
+                });
+
+                this.teams = [
+                    ...this.teams.slice( 0, ind ),
+                    ...this.teams.slice( ind + 1 )
+                ]
+            } catch ( error ) {
+                this.$toast.error( error.response.data.message );
+            }
         },
         async addMemberToTeam( teamId, event ) {
             const email = event.target.parentElement.children[0].value;
             try {
                 let ind;
                 const updatedTeam = await addMemberToTeam( teamId, [ email ] );
-                console.log( updatedTeam );
+                // console.log( updatedTeam );
+                this.$toast.success( `Added <strong>${email}</strong>` );
+
                 this.teams.forEach( ( team, index ) => {
                     if( team._id === updatedTeam._id ) {
                         ind = index;
@@ -141,12 +161,22 @@ export default {
                     ...this.teams.slice( ind + 1 )
                 ]
             } catch ( error ) {
-                console.log( error );
+                // console.log( error );
+                this.$toast.error( error.response.data.message );
             }
         }
     },
     mounted() {
-        this.closeModal();
+        getAllTeamsByUserId()
+                .then( response => {
+                    this.status = LOADED;
+                    this.teams = response;
+                })
+                .catch( error => {
+                    this.status = ERROR_LOADING;
+                    this.error = error;
+                    // console.log( error );
+                });
         getAllUsers()
             .then( response => {
                 this.users = response;

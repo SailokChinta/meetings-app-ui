@@ -8,7 +8,7 @@
                 <hr class="my-2">
                 <p class="lead">
                     <p>Click here to
-                        <router-link to="/Calendar">view calendar</router-link>
+                        <router-link to="/calendar">view calendar</router-link>
                     </p>
             </div>
         </div>

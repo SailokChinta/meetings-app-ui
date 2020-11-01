@@ -15,7 +15,8 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-multiselect": "^2.1.6",
-    "vue-router": "^3.4.8"
+    "vue-router": "^3.4.8",
+    "vue-toast-notification": "^0.5.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

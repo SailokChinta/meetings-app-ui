@@ -4,36 +4,19 @@
             <br>
             <h1>Add Team</h1>
             <hr>
-
-            <div v-if="this.status === 'LOADING'" class="alert alert-primary alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <strong>Loading Teams...</strong>
-            </div>
-
-            <div v-if="this.status === 'ERROR_LOADING'" class="alert alert-primary alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <strong>{{ this.error.response.data.message }}</strong>
-            </div>
-
             <form @submit.prevent="addTeam">
                 <div class="form-group">
                     <h4>Team Name</h4>
-                    <input type="text" class="form-control" id="team-name" aria-describedby="" placeholder="Logistics, Payments" v-model="name">
+                    <input type="text" class="form-control" id="team-name" aria-describedby="" placeholder="Logistics, Payments" v-model="name" required>
                 </div>
                 <div class="form-group">
                     <h4>Team Short Name</h4>
                     <small class="form-text text-muted">Short should start with @ and - seperates the words </small>
-                    <input type="text" class="form-control" id="team-short-name" placeholder=" @logistics, @payments-tech-support" v-model="shortName">
+                    <input type="text" class="form-control" id="team-short-name" placeholder=" @logistics, @payments-tech-support" v-model="shortName" required>
                 </div>
                 <h4>Description</h4>
                 <div class="input-group">
-                    <textarea name="team-description" placeholder="Deals with Payment related issues." id="team-description" class="form-control" aria-label="With textarea" @change="inputChangeHandler( $event )" v-model="description"></textarea>
+                    <textarea name="team-description" placeholder="Deals with Payment related issues." id="team-description" class="form-control" aria-label="With textarea" v-model="description" required></textarea>
                 </div>
                 <div>
                     <h4>Add Members</h4>
@@ -45,19 +28,17 @@
     </div>
 </template>
 <script>
-import { getAllUsers } from '@/services/users';
 import { addTeam } from '@/services/teams';
 import Multiselect from 'vue-multiselect';
 
-const LOADING = 'LOADING', LOADED = 'LOADED', ERROR_LOADING = 'ERROR_LOADING';
 export default {
     components: {
         Multiselect
     },
+    props: ["users"],
     data() {
         return {
             options: [],
-            status: LOADING,
             name: '',
             shortName: '',
             description: '',
@@ -65,7 +46,7 @@ export default {
         }
     },
     methods: {
-        async addTeam() {
+        addTeam() {
             const requestBody = {
                 name: this.name,
                 shortName: this.shortName,
@@ -75,30 +56,20 @@ export default {
 
             addTeam( requestBody )
                     .then( response => {
-                        response;
-                        this.$emit('close-modal');
+                        this.$toast.success( 'Added a Team' );
+                        this.$emit('submit-team', response);
                     })
                     .catch ( error => {
                         this.name = '';
                         this.shortName = '';
                         this.description = '';
                         this.members = []
-                        error;
+                        this.$toast.error( error.response.data.message );
                     });
         }
     },
-    async mounted() {
-        try { 
-            const response = await getAllUsers();
-            this.status = LOADED;
-            const users = response;
-            users.forEach( user => {
-                this.options.push( {email: user.email} );
-            });
-        } catch ( error ) {
-            this.status = ERROR_LOADING;
-            this.error = error;
-        }
+    mounted() {
+        this.options = this.users;
     }
 }
 </script>
