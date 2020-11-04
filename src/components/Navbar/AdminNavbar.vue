@@ -2,18 +2,7 @@
     <div>  
         <nav class="navbar navbar-expand navbar-light bg-light">
             <ul class="nav navbar-nav mr-auto">
-                <li class="nav-item">
-                    <router-link class="nav-link" to="/home">Home</router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" to="/calendar">Calendar</router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" to="/meetings">Meetings</router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" to="/teams">Teams</router-link>
-                </li>
+                <span style="font-size: 1.5rem;">Welcome, {{ this.user.name }}</span>
             </ul>
             <div id="log-out">
                 <ul class="nav navbar-nav navbar-right ml-auto">
@@ -24,9 +13,14 @@
     </div>
 </template>
 <script>
-import { logOutUser } from "@/services/auth";
+import { logOutUser, getUser } from "@/services/auth";
 export default {
-    name: 'Navbar',
+    name: 'AdminNavbar',
+    data() {
+        return {
+            user: getUser()
+        }
+    },
     methods: {
         logOutUser() {
             logOutUser();
@@ -40,5 +34,4 @@ export default {
     border-left:1px solid lightgrey;
     padding-left: 10px;
 }
-
 </style>

@@ -37,16 +37,17 @@
                                 <h5 class="card-title">{{ meeting.date | formatDate }}</h5>
                                 <p style="padding-left: 10px;">{{ meeting.startTime.hours | formatTime }}:{{ meeting.startTime.minutes | formatTime }} - {{ meeting.endTime.hours | formatTime }}:{{ meeting.endTime.minutes | formatTime }}</p>
                                 </div>
-                                <p class="card-text">{{meeting.name}}</p>
-                                <button type="button" class="btn btn-danger" @click="excuseMeeting( meeting._id )" >Excuse Yourself</button>
+                                <h6 class="card-text">{{meeting.name}}</h6>
+                                <p class="card-text">{{meeting.description}}</p>
+                                <button type="button" class="btn btn-danger" v-if="new Date(meeting.date) >= new Date(new Date().toDateString())" @click="excuseMeeting( meeting._id )" >Excuse Yourself</button>
                                 <hr>
                                 <strong>Attendees:</strong>
                                 <div v-for='attendee in meeting.attendees' :key="attendee.userId" style="display: inline">
                                     <span class="badge badge-primary" style="margin-left: 10px;">{{ attendee.email }}</span>
                                 </div>
-                                <div style="padding-top:10px">
+                                <div style="padding-top:10px" v-if="new Date(meeting.date) >= new Date(new Date().toDateString())">
                                     <select name="users" id="users" style="margin-right: 10px;">
-                                        <option disabled="disabled" value="">Select Member</option>
+                                        <option value="">Select Member</option>
                                         <option v-for="user in users" :key="user._id" :value="user.email">{{user.email}}</option>
                                     </select>
                                     <button type="button" class="btn btn-primary"  @click="addMemberToMeeting( meeting._id, $event )">Add</button>
@@ -114,7 +115,7 @@ export default {
                 let ind;
                 const updatedMeeting = await addMemberToMeeting( meetingId, [ email ] );
                 // console.log( updatedMeeting );
-                this.$toast.success( `Added <strong>${email}</strong>` );
+                this.$toast.success( `Added <strong>${email}</strong> to <strong>${updatedMeeting.name}</strong>` );
 
                 this.meetings.forEach( ( meeting, index ) => {
                             if( meeting._id === updatedMeeting._id ) {

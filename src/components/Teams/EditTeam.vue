@@ -36,24 +36,23 @@ export default {
     },
     props: [ "team" ],
     methods: {
-        editTeamDetails() {
+        async editTeamDetails() {
             const requestBody = {
                 name: this.name,
                 shortName: this.shortName,
                 description: this.description,
             }
 
-            editTeamDetails( this.team._id, requestBody )
-                    .then( response => {
-                        this.$toast.success( 'Updated Team Details' );
-                        this.$emit('edit-team', response);
-                    })
-                    .catch ( error => {
-                        this.name = '';
-                        this.shortName = '';
-                        this.description = '';
-                        this.$toast.error( error.response.data.message );
-                    });
+            try {
+                const response  = await editTeamDetails( this.team._id, requestBody );
+                this.$toast.success( 'Updated Team Details' );
+                this.$emit('edit-team', response);
+            } catch ( error ) {
+                this.name = '';
+                this.shortName = '';
+                this.description = '';
+                this.$toast.error( error.response.data.message );
+            }
         }
     },
 }

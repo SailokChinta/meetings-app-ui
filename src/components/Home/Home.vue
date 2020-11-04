@@ -4,7 +4,7 @@
 
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
-                <h1 class="display-4">Welcome  {{ this.name }} </h1>
+                <h1 class="display-4">Welcome  {{ this.user.name }} </h1>
                 <hr class="my-2">
                 <p class="lead">
                     <p>Click here to
@@ -16,6 +16,7 @@
 </template>
 <script>
 import Navbar from '../Navbar/Navbar';
+import { getUser } from '@/services/auth';
 
 export default {
     components: {
@@ -23,14 +24,9 @@ export default {
     },
     data() {
         return {
-            name: ''
+            user: getUser()
         }
     },
-    mounted(){
-        if( localStorage.getItem( 'name' ) ) {
-            this.name = localStorage.getItem( 'name' );
-        }
-    }
 }
 </script>
 <style scoped>

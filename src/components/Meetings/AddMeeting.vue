@@ -57,7 +57,7 @@
                         <h4 class="unbold">
                             EmailIDs of attendees or teams's short
                         </h4>
-                        <multiselect v-model="attendees" tag-placeholder="Add this as new tag" placeholder="john.@example, @annual-day" label="name" track-by="id" :options="options" :multiple="true" :taggable="true"></multiselect>
+                        <multiselect v-model="attendees" tag-placeholder="Add this as new tag" placeholder="john@example, @annual-day" label="name" track-by="id" :options="options" :multiple="true" :taggable="true"></multiselect>
                         <p>seperate emailids / team's short names by commas - teams short names always start with @</p>
 
                         <p class="lead">

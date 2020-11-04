@@ -22,12 +22,12 @@
                 <strong>{{ this.error.response.data.message }}</strong>
             </div>
 
-            <div class="jumbotron jumbotron-fluid" v-if = "status === 'LOADED'  && this.teams.length === 0">
+            <!-- <div class="jumbotron jumbotron-fluid" v-if = "status === 'LOADED'  && this.teams.length === 0">
                 <div class="container">
-                    <p class="lead text-center">You are not part of any team!!</p>
+                    <p class="lead text-center">You are not part of any team.</p>
                 </div>
-            </div>
-            <div class="row" v-else-if = "status === 'LOADED'  && this.teams.length > 0 ">
+            </div> -->
+            <div class="row" v-else-if = "status === 'LOADED'">
                 <div class="col-4 d-flex" v-for="team in this.teams" :key="team._id">
                     <div class="card" style="width: 18rem;" >
                         <div class="card-body">
@@ -124,7 +124,7 @@ export default {
         async excuseTeam( teamId ) {
             try {
                 const response = await excuseTeam( teamId );
-                this.$toast.success( `Left Team <strong>${response.name}</strong>` );
+                this.$toast.success( `Left <strong>${response.name}</strong>` );
 
                 let ind;
                 this.teams.forEach( ( team, index ) => {
@@ -147,7 +147,7 @@ export default {
                 let ind;
                 const updatedTeam = await addMemberToTeam( teamId, [ email ] );
                 // console.log( updatedTeam );
-                this.$toast.success( `Added <strong>${email}</strong>` );
+                this.$toast.success( `Added <strong>${email}</strong> to <strong>${updatedTeam.name}</strong>` );
 
                 this.teams.forEach( ( team, index ) => {
                     if( team._id === updatedTeam._id ) {

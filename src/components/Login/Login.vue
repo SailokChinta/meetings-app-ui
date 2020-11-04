@@ -32,7 +32,7 @@
     </div>
 </template>
 <script>
-import { authenticateUser, setAuthenticationDetails } from '@/services/auth';
+import { authenticateUser, setAuthenticationDetails, isAdmin } from '@/services/auth';
 
 export default {
     name: 'Login',
@@ -49,8 +49,16 @@ export default {
                 setAuthenticationDetails( response );
         
                 this.$toast.success( 'Successfully logged in' );
-                this.$router.push( { name: 'home' } );
+
+                if( isAdmin() ) {
+                    this.$router.push( { name: 'admin' } );
+                } else {
+                    this.$router.push( { name: 'home' } );
+                }
             } catch ( error ) {
+                this.email = '';
+                this.password = '';
+                console.log( error );
                 this.$toast.error( error.response.data.message );
             }
         }

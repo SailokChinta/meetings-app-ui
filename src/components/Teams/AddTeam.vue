@@ -46,26 +46,25 @@ export default {
         }
     },
     methods: {
-        addTeam() {
+        async addTeam() {
             const requestBody = {
                 name: this.name,
                 shortName: this.shortName,
                 description: this.description,
                 members: this.members.map( member => member.email )
             }
-
-            addTeam( requestBody )
-                    .then( response => {
-                        this.$toast.success( 'Added a Team' );
-                        this.$emit('submit-team', response);
-                    })
-                    .catch ( error => {
-                        this.name = '';
-                        this.shortName = '';
-                        this.description = '';
-                        this.members = []
-                        this.$toast.error( error.response.data.message );
-                    });
+            
+            try {
+                const response = await addTeam( requestBody );
+                this.$toast.success( `Created <strong>${response[0].name}</strong>` );
+                this.$emit('submit-team', response);
+            } catch ( error ) {
+                    this.name = '';
+                    this.shortName = '';
+                    this.description = '';
+                    this.members = []
+                    this.$toast.error( error.response.data.message );
+            }
         }
     },
     mounted() {

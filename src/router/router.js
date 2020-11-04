@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import { isAuthenticated } from '../services/auth';
+import { isAdmin, isAuthenticated } from '../services/auth';
 
 Vue.use( Router );
 
@@ -28,6 +28,28 @@ const router = new Router({
             name: 'admin',
             path: '/admin',
             component: () => import( '@/components/Admin/Admin' ),
+            children: [
+                {
+                    name: 'admin-users',
+                    path: 'users',
+                    component: () => import( '@/components/Admin/Users' ),
+                },
+                {
+                    name: 'admin-meetings',
+                    path: 'meetings',
+                    component: () => import( '@/components/Admin/Meetings' ),
+                },
+                {
+                    name: 'admin-teams',
+                    path: 'teams',
+                    component: () => import( '@/components/Admin/Teams' ),
+                },
+                {
+                    name: 'admin-uploads',
+                    path: 'uploads',
+                    component: () => import( '@/components/Admin/Uploads' ),
+                }
+            ],
         },
         {
             name: 'calendar',
@@ -60,8 +82,21 @@ const router = new Router({
 });
 
 router.beforeEach(( to, from, next ) => {
-    if( ( from !== '/' || from !== '/login' ) && isAuthenticated() ) {
+    if ( to.name === 'login-page' || to.name === 'register' ) {
         next();
+    } else if( isAuthenticated() ) {
+        if( isAdmin() ) {
+            if( to.name === 'admin' || to.name === 'admin-users' || to.name === 'admin-meetings' || to.name === 'admin-teams' || to.name === 'admin-uploads' ) {
+                next();
+            } else {
+                next( '/admin' );
+            }
+        }  else {
+            if( to.name === 'admin' || to.name === 'admin-users' || to.name === 'admin-meetings' || to.name === 'admin-teams' || to.name === 'admin-uploads' ) {
+                next( '/home' );
+            } else {
+                next();
+            }        }
     } else {
         next('/');
     }

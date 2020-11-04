@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+const TOKEN_KEY = 'token';
+const USER_KEY = 'user';
+
 export const authenticateUser = ( email, password ) => {
     return axios.post( `http://localhost:8080/api/auth/login`, { email, password } )
             .then( response => {
@@ -12,9 +15,13 @@ export const authenticateUser = ( email, password ) => {
 }
 
 export const setAuthenticationDetails = ( data ) => {
-    for( const [ key, val ] of Object.entries( data ) ) {
-        localStorage.setItem( key, val );
-    }
+    const { token, ...user } = data;
+    localStorage.setItem( TOKEN_KEY, token );
+    localStorage.setItem( USER_KEY, JSON.stringify( user ) );
+}
+
+export const getUser = () => {
+    return JSON.parse( localStorage.getItem( USER_KEY ) ) || {};
 }
 
 export const logOutUser = () => {
@@ -22,9 +29,10 @@ export const logOutUser = () => {
 }
 
 export const isAdmin = () => {
-    return !!localStorage[ 'roles' ].split(',').find( role => role === 'ADMIN' );
+    const user = JSON.parse( localStorage.getItem( USER_KEY ) ) || {};
+    return !!user.roles.find( role => role === 'ADMIN' );
 }
 
 export const isAuthenticated = () => {
-    return localStorage[ 'token' ] !== '';
+    return !!localStorage[ 'token' ];
 };

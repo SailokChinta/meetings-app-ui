@@ -14,13 +14,13 @@ export const formatDate = ( ISODate ) => {
         'December'
       ]
       const date = new Date( ISODate );
-      return `${months[date.getMonth()]} ${date.getDay()+1}, ${date.getFullYear()}`;
+      return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 };
 
 export const formatTime = ( time ) => {
     let timeMap = [];
 
-    for( let i = 0; i < 9; i++ ) {
+    for( let i = 0; i < 10; i++ ) {
         timeMap.push( `0${i}` );
     }
 

@@ -3,7 +3,7 @@
         <Navbar />
         <div class = "container">
             <br />
-            <h1 class="text-left">Calender</h1>
+            <h1 class="text-left">Calendar</h1>
             <hr />
             <div class="date-picker">
                 <input type="date" name="datepicker" id="date-picker" :value="this.selectedDate" @input="dateChangeHandler( $event )">
@@ -45,7 +45,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ meeting.name }}</h5>
                                 <!-- <p class="card-text">{{ meeting.date }}</p> -->
-                                <p class="card-text">{{ meeting.startTime.hours }} : {{ meeting.startTime.minutes }} - {{ meeting.endTime.hours }} : {{ meeting.endTime.minutes }}</p>
+                                <p class="card-text">{{ meeting.startTime.hours | formatTime}}:{{ meeting.startTime.minutes | formatTime }} - {{ meeting.endTime.hours | formatTime}}:{{ meeting.endTime.minutes | formatTime }}</p>
                                 <hr>
                                 <p class="card-text">{{ meeting.description }}</p>
                             </div>

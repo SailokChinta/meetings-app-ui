@@ -14,3 +14,46 @@ export const submitFile = ( file, path ) => {
                         throw error;
                     });
 }
+
+export const getAllUsers = () => {
+    const headers = { Authorization: localStorage.token || '' };
+    let config = { headers };
+    return axios.get( `http://localhost:8080/api/admin/users`, config )
+                .then( response => {
+                    // console.log( response.data );
+                    return response.data;
+                })
+                .catch( error => {
+                    // console.log( error );
+                    throw error;
+                });
+}
+
+export const getAllMeetings = () => {
+    const headers = { Authorization: localStorage.token || '' };
+    let config = { headers };
+    return axios.get( `http://localhost:8080/api/admin/meetings`, config )
+                .then( response => {
+                    // console.log( response.data );
+                    return response.data;
+                })
+                .catch( error => {
+                    // console.log( error );
+                    throw error;
+                });
+}
+
+export const getAllTeams = () => {
+    const headers = { Authorization: localStorage.token || '' };
+    let config = { headers };
+    return axios.get( `http://localhost:8080/api/admin/teams`, config )
+                .then( response => {
+                    // console.log( response.data );
+                    return response.data;
+                })
+                .catch( error => {
+                    // console.log( error );
+                    throw error;
+                });
+}
+
